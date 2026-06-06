@@ -1,0 +1,20 @@
+jobstreet:
+  keywords:
+    - "Software Engineer"
+    - "Head of IT"
+    - "IT Manager"
+    - "IT Development"
+  location: "Indonesia"
+  salary_min: 0
+
+cv:
+  head_of_it: "CV/Head of IT Developments.pdf"
+  senior_engineer: "CV/Senior Software Engineer.pdf"
+
+ai:
+  screening_threshold: 75
+  screening_model: "claude-haiku-4-5-20251001"
+  cover_letter_model: "claude-sonnet-4-6"
+
+scheduler:
+  check_interval_hours: 12
