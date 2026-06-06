@@ -38,6 +38,7 @@ class JobStreetSite(BaseSite):
 
     def search_jobs(self, keywords: list[str], location: str) -> list[JobListing]:
         results: list[JobListing] = []
+        seen: set[str] = set()
         for keyword in keywords:
             self.page.goto(f"{self.BASE_URL}/en/jobs")
             self._pause()
@@ -51,12 +52,15 @@ class JobStreetSite(BaseSite):
                 company_el = card.query_selector("[data-testid='company-name']")
                 link_el = card.query_selector("a")
                 if title_el and company_el and link_el:
-                    results.append(JobListing(
-                        title=title_el.inner_text().strip(),
-                        company=company_el.inner_text().strip(),
-                        url=link_el.get_attribute("href"),
-                        site="JobStreet",
-                    ))
+                    url = link_el.get_attribute("href")
+                    if url and url not in seen:
+                        seen.add(url)
+                        results.append(JobListing(
+                            title=title_el.inner_text().strip(),
+                            company=company_el.inner_text().strip(),
+                            url=url,
+                            site="JobStreet",
+                        ))
         return results
 
     def get_job_detail(self, listing: JobListing) -> JobDetail:

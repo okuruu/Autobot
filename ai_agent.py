@@ -29,12 +29,15 @@ def load_cv_cache(config: dict) -> None:
         cv_cache[key] = "\n".join(page.extract_text() or "" for page in reader.pages)
 
 def screen(client: Anthropic, job_description: str, config: dict) -> dict:
+    cv_blocks = [
+        {"type": "text", "text": text, "cache_control": {"type": "ephemeral"}}
+        for text in cv_cache.values()
+    ]
     response = client.messages.create(
         model=config["ai"]["screening_model"],
         system=[{"type": "text", "text": _SCREENING_SYSTEM, "cache_control": {"type": "ephemeral"}}],
         messages=[{"role": "user", "content": [
-            {"type": "text", "text": cv_cache["head_of_it"], "cache_control": {"type": "ephemeral"}},
-            {"type": "text", "text": cv_cache["senior_engineer"], "cache_control": {"type": "ephemeral"}},
+            *cv_blocks,
             {"type": "text", "text": f"Job to screen:\n{job_description}"},
         ]}],
         max_tokens=256,
